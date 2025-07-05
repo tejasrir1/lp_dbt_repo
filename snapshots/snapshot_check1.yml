@@ -1,0 +1,11 @@
+version: 2
+
+snapshots:
+  - name: snapshot_check1
+    relation: source('airbnb', 'customers')
+    config:
+      target_schema: 'SNAPSHOTS'
+      strategy: 'check'
+      unique_key: 'customer_id'
+      check_cols: [ 'CUSTOMER_STATE']
+      
