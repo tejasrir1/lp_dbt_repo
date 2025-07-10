@@ -14,3 +14,6 @@ sources:
         identifier: RAW_REVIEWS
       - name: customers
         identifier: RAW_CUSTOMER
+
+      - name: sales
+        identifier: SALES_US
