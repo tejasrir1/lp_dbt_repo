@@ -1,16 +1,24 @@
 {{
-    config(
-        materialized = 'incremental',
-        on_schema_change = 'fail' ,
-        
+  config(
+    materialized = 'incremental',
+    on_schema_change='fail'
     )
 }}
-with src_reviews as(
-    select * from {{ ref('src_reviews') }}
+WITH src_reviews AS (
+  SELECT * FROM {{ ref('src_reviews') }}
 )
-select * from src_reviews 
-where review_text is not null 
-
+SELECT 
+  {{ dbt_utils.generate_surrogate_key(['listing_id', 'review_date', 'reviewer_name', 'review_text']) }}
+    AS review_id,
+  * 
+  FROM src_reviews
+WHERE review_text is not null
 {% if is_incremental() %}
-  and review_date > (SELECT MAX(review_date) FROM {{ this }})
+  AND review_date > (select max(review_date) from {{ this }})
 {% endif %}
+
+ 
+--Note: Instead of dbt run, as it’s an incremental model we are using --full-refresh
+
+--(venv) c:\course\dbtlearn>dbt run --full-refresh --select fct_reviews
+ 
